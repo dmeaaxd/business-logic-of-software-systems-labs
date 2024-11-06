@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_10n48fc" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.26.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
+  <bpmn:collaboration id="Collaboration_0hnwbkz">
+    <bpmn:participant id="Participant_0adh6bk" name="Просмотр администраторов магазина" processRef="Process_1nwhk9h" />
+    <bpmn:participant id="Participant_0dc9klk" name="Изменение администраторов магазина" processRef="Process_1igogck" />
+    <bpmn:textAnnotation id="TextAnnotation_0qje0fk">
+      <bpmn:text>Входные параметры:
+- shop_id: Long - идентификатор магазина</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0mhavat" associationDirection="None" sourceRef="TextAnnotation_0qje0fk" targetRef="Participant_0adh6bk" />
+    <bpmn:textAnnotation id="TextAnnotation_0m7noeb">
+      <bpmn:text>Вернет:
+- shop_admins: String - json список всех администраторов магазина
+- shop_admins_count: Long - количество администраторов магазина</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0t79zpl" associationDirection="None" sourceRef="TextAnnotation_0m7noeb" targetRef="Participant_0adh6bk" />
+    <bpmn:textAnnotation id="TextAnnotation_0o36a45">
+      <bpmn:text>Входные параметры:
+- shop_id: Long - идентификатор магазина</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1oo0bpc" associationDirection="None" sourceRef="TextAnnotation_0o36a45" targetRef="Participant_0dc9klk" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1nwhk9h" name="Просмотр администраторов магазина" isExecutable="true" camunda:historyTimeToLive="100" camunda:isStartableInTasklist="false">
+    <bpmn:startEvent id="Event_0f66nlc">
+      <bpmn:outgoing>Flow_1aqmo9f</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_13ipn6p" name="Показать администраторов магазина" camunda:delegateExpression="#{showAllShopAdmins}">
+      <bpmn:incoming>Flow_1aqmo9f</bpmn:incoming>
+      <bpmn:outgoing>Flow_01j511c</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_0k4pxzj" name="Администраторы магазина">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="shop_admins_count" label="Количество адимнистраторов" type="long" />
+          <camunda:formField id="shop_admins" label="Администраторы магазина" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_01j511c</bpmn:incoming>
+      <bpmn:outgoing>Flow_1f4a5m1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_08lltaj">
+      <bpmn:incoming>Flow_1f4a5m1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1aqmo9f" sourceRef="Event_0f66nlc" targetRef="Activity_13ipn6p" />
+    <bpmn:sequenceFlow id="Flow_01j511c" sourceRef="Activity_13ipn6p" targetRef="Activity_0k4pxzj" />
+    <bpmn:sequenceFlow id="Flow_1f4a5m1" sourceRef="Activity_0k4pxzj" targetRef="Event_08lltaj" />
+  </bpmn:process>
+  <bpmn:process id="Process_1igogck" name="Изменение администраторов магазина" isExecutable="true" camunda:historyTimeToLive="100" camunda:isStartableInTasklist="false">
+    <bpmn:startEvent id="Event_0pc04yf">
+      <bpmn:outgoing>Flow_074zazv</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_10sgp2f" name="Введите ID новых администраторов">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="updated_shop_admins" label="Введите ID администраторов, которые должны является администраторами данного магазина (через запятую и пробел)" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_074zazv</bpmn:incoming>
+      <bpmn:outgoing>Flow_01lned0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0egb958" name="Изменить администраторов магазина" camunda:delegateExpression="#{updateShopAdmins}">
+      <bpmn:incoming>Flow_01lned0</bpmn:incoming>
+      <bpmn:outgoing>Flow_14pf4j5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_0oi1tay">
+      <bpmn:incoming>Flow_14pf4j5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_074zazv" sourceRef="Event_0pc04yf" targetRef="Activity_10sgp2f" />
+    <bpmn:sequenceFlow id="Flow_01lned0" sourceRef="Activity_10sgp2f" targetRef="Activity_0egb958" />
+    <bpmn:sequenceFlow id="Flow_14pf4j5" sourceRef="Activity_0egb958" targetRef="Event_0oi1tay" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0hnwbkz">
+      <bpmndi:BPMNShape id="Participant_0adh6bk_di" bpmnElement="Participant_0adh6bk" isHorizontal="true">
+        <dc:Bounds x="500" y="80" width="600" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f66nlc_di" bpmnElement="Event_0f66nlc">
+        <dc:Bounds x="572" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0k81noi" bpmnElement="Activity_13ipn6p">
+        <dc:Bounds x="670" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0k4pxzj_di" bpmnElement="Activity_0k4pxzj">
+        <dc:Bounds x="840" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08lltaj_di" bpmnElement="Event_08lltaj">
+        <dc:Bounds x="1012" y="192" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1aqmo9f_di" bpmnElement="Flow_1aqmo9f">
+        <di:waypoint x="608" y="210" />
+        <di:waypoint x="670" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01j511c_di" bpmnElement="Flow_01j511c">
+        <di:waypoint x="770" y="210" />
+        <di:waypoint x="840" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f4a5m1_di" bpmnElement="Flow_1f4a5m1">
+        <di:waypoint x="940" y="210" />
+        <di:waypoint x="1012" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_0dc9klk_di" bpmnElement="Participant_0dc9klk" isHorizontal="true">
+        <dc:Bounds x="500" y="390" width="600" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0pc04yf_di" bpmnElement="Event_0pc04yf">
+        <dc:Bounds x="572" y="502" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10sgp2f_di" bpmnElement="Activity_10sgp2f">
+        <dc:Bounds x="670" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0egb958_di" bpmnElement="Activity_0egb958">
+        <dc:Bounds x="850" y="480" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0oi1tay_di" bpmnElement="Event_0oi1tay">
+        <dc:Bounds x="1012" y="502" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_01lned0_di" bpmnElement="Flow_01lned0" bioc:stroke="#6b3c00" color:border-color="#6b3c00">
+        <di:waypoint x="770" y="520" />
+        <di:waypoint x="850" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_074zazv_di" bpmnElement="Flow_074zazv">
+        <di:waypoint x="608" y="520" />
+        <di:waypoint x="670" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14pf4j5_di" bpmnElement="Flow_14pf4j5">
+        <di:waypoint x="950" y="520" />
+        <di:waypoint x="1012" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0mhavat_di" bpmnElement="Association_0mhavat">
+        <di:waypoint x="380" y="121" />
+        <di:waypoint x="500" y="154" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0t79zpl_di" bpmnElement="Association_0t79zpl">
+        <di:waypoint x="1150" y="120" />
+        <di:waypoint x="1100" y="123" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1oo0bpc_di" bpmnElement="Association_1oo0bpc">
+        <di:waypoint x="378" y="431" />
+        <di:waypoint x="500" y="465" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0qje0fk_di" bpmnElement="TextAnnotation_0qje0fk">
+        <dc:Bounds x="160" y="80" width="290" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0m7noeb_di" bpmnElement="TextAnnotation_0m7noeb">
+        <dc:Bounds x="1150" y="80" width="410" height="60" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1bcow14" bpmnElement="TextAnnotation_0o36a45">
+        <dc:Bounds x="160" y="390" width="290" height="41" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
